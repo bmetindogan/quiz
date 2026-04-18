@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bana Uygun Toprağı Bul - Minik Orman</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fbf9f4;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { 
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: #37563b;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #424841;
+            margin-bottom: 3rem;
+            font-size: 16px;
+        }
+        .question-box {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: 1px solid #e4e2dd;
+        }
+        .question-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: #37563b;
+            margin-bottom: 1rem;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .option input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #37563b;
+        }
+        .option label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 15px;
+            color: #1b1c19;
+        }
+        button {
+            display: block;
+            width: 100%;
+            background: #37563b;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background: #4f6f52; }
+        .result {
+            display: none;
+            text-align: center;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #e4e2dd;
+        }
+        .result h2 {
+            font-family: 'Playfair Display', serif;
+            color: #37563b;
+            margin-bottom: 1.5rem;
+        }
+        .product-box {
+            background: #f5f3ee;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        .product-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: #37563b;
+            margin-bottom: 0.5rem;
+        }
+        .product-box p {
+            font-size: 14px;
+            color: #424841;
+        }
+        .buy-btn {
+            background: #37563b;
+            color: #fff;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .buy-btn:hover { background: #4f6f52; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bana Uygun Toprağı Bul</h1>
+        <p class="subtitle">3 soruya cevap ver, sana en uygun toprak karışımını öğren</p>
+        
+        <div id="quiz"></div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Hangi bitkilerin var?",
+                options: [
+                    { text: "Genel iç mekan bitkileri (Pothos, Ficus, Philodendron)", value: "general" },
+                    { text: "Tropikal devler (Monstera, Anthurium, Alocasia)", value: "tropical" },
+                    { text: "Kaktüs ve Succulents", value: "succulent" }
+                ]
+            },
+            {
+                q: "Su verme sıklığı?",
+                options: [
+                    { text: "Sık sık (haftada 2-3 kez)", value: "frequent" },
+                    { text: "Orta (haftada 1 kez)", value: "moderate" },
+                    { text: "Nadiren (15 günde 1 kez)", value: "rarely" }
+                ]
+            },
+            {
+                q: "Işık durumu?",
+                options: [
+                    { text: "Parlak, dolaylı ışık", value: "bright" },
+                    { text: "Orta ışık", value: "medium" },
+                    { text: "Az ışık", value: "low" }
+                ]
+            }
+        ];
+
+        const products = {
+            "general-frequent-bright": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-frequent-medium": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-frequent-low": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-moderate-bright": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-moderate-medium": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-moderate-low": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-rarely-bright": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-rarely-medium": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "general-rarely-low": { name: "Sihirli Toprak – Universal Mix", url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", desc: "Genel iç mekan bitkileri için dengeli nem ve hava gözenekliliği" },
+            "tropical-frequent-bright": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-frequent-medium": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-frequent-low": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-moderate-bright": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-moderate-medium": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-moderate-low": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-rarely-bright": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-rarely-medium": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "tropical-rarely-low": { name: "Yeşil Gövdeler – Aroid Mix", url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", desc: "Bol gözenekli, çam kabuğu ve kömür destekli tropikal devler için ideal" },
+            "succulent-frequent-bright": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-frequent-medium": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-frequent-low": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-moderate-bright": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-moderate-medium": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-moderate-low": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-rarely-bright": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-rarely-medium": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" },
+            "succulent-rarely-low": { name: "Çöl Esintisi – Succulent Mix", url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", desc: "Kök çürümesini engelleyen, mineral ağırlıklı ve çok hızlı drenaj" }
+        };
+
+        let currentQ = 0;
+        let answers = {};
+
+        function render() {
+            const quiz = document.getElementById('quiz');
+            const q = questions[currentQ];
+            
+            let html = `<div class="question-box"><h2>Soru ${currentQ + 1}/3: ${q.q}</h2>`;
+            q.options.forEach(opt => {
+                html += `<div class="option"><input type="radio" id="${opt.value}" name="q${currentQ}" value="${opt.value}"><label for="${opt.value}">${opt.text}</label></div>`;
+            });
+            html += `</div>`;
+            
+            if (currentQ < 2) {
+                html += `<button onclick="next()">Sonraki →</button>`;
+            } else {
+                html += `<button onclick="finish()">Sonucu Göster</button>`;
+            }
+            
+            quiz.innerHTML = html;
+        }
+
+        function next() {
+            const selected = document.querySelector(`input[name="q${currentQ}"]:checked`);
+            if (!selected) { alert('Lütfen bir seçenek seç'); return; }
+            answers[currentQ] = selected.value;
+            currentQ++;
+            render();
+        }
+
+        function finish() {
+            const selected = document.querySelector(`input[name="q${currentQ}"]:checked`);
+            if (!selected) { alert('Lütfen bir seçenek seç'); return; }
+            answers[currentQ] = selected.value;
+            
+            const key = `${answers[0]}-${answers[1]}-${answers[2]}`;
+            const product = products[key] || products["general-moderate-medium"];
+            
+            document.getElementById('quiz').style.display = 'none';
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.innerHTML = `
+                <h2>Sana En Uygun Toprak Karışımı:</h2>
+                <div class="product-box">
+                    <h3>${product.name}</h3>
+                    <p>${product.desc}</p>
+                </div>
+                <a href="${product.url}" class="buy-btn">Satın Al →</a>
+            `;
+        }
+
+        render();
+    </script>
+</body>
+</html>

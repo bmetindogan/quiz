@@ -27,17 +27,23 @@
             margin-bottom: 2.5rem;
             font-size: 15px;
         }
-        .progress {
+        .progress-wrap {
             background: #e4e2dd;
             height: 6px;
             border-radius: 10px;
-            margin-bottom: 2rem;
+            margin-bottom: 0.5rem;
             overflow: hidden;
         }
         .progress-bar {
             background: #37563b;
             height: 100%;
-            transition: width 0.3s;
+            transition: width 0.4s ease;
+        }
+        .progress-label {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 1.5rem;
         }
         .question-box {
             background: #fff;
@@ -65,10 +71,8 @@
             align-items: center;
             gap: 10px;
         }
-        .option:hover {
-            border-color: #37563b;
-            background: #fff;
-        }
+        .option:hover { border-color: #37563b; background: #fff; }
+        .option.selected { border-color: #37563b; background: #fff; }
         .option input[type="radio"] {
             cursor: pointer;
             width: 18px;
@@ -80,25 +84,6 @@
             cursor: pointer;
             font-size: 15px;
             color: #1b1c19;
-        }
-        button {
-            display: block;
-            width: 100%;
-            background: #37563b;
-            color: #fff;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 1rem;
-        }
-        button:hover { background: #4f6f52; }
-        button:disabled { 
-            background: #c2c8bf; 
-            cursor: not-allowed; 
         }
         .result {
             display: none;
@@ -152,6 +137,7 @@
         }
         .buy-btn:hover { background: #4f6f52; }
         .back-btn {
+            display: block;
             background: transparent;
             color: #37563b;
             border: 1px solid #c2c8bf;
@@ -159,211 +145,392 @@
             border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            margin-top: 1rem;
+            margin: 1rem auto 0;
+            width: fit-content;
         }
-        .back-btn:hover { 
-            background: #f5f3ee; 
-            border-color: #37563b;
-        }
+        .back-btn:hover { background: #f5f3ee; border-color: #37563b; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bana Uygun Toprağı Bul</h1>
-        <p class="subtitle">Birkaç soruya cevap ver, sana en uygun toprak karışımını önerelim</p>
-        
-        <div class="progress"><div class="progress-bar" id="progress"></div></div>
-        
-        <div id="quiz"></div>
-        <div id="result" class="result"></div>
-    </div>
+<div class="container">
+    <h1>Bana Uygun Toprağı Bul</h1>
+    <p class="subtitle">Birkaç soruya cevap ver, sana en uygun toprak karışımını önerelim</p>
 
-    <script>
-        const products = {
-            "sihirli": { 
-                name: "Sihirli Toprak – Universal Mix", 
-                url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", 
-                desc: "Popüler iç mekan bitkileri için güvenli ve dengeli bir temel. Hafif, havadar ve nem tutma dengesi mükemmel." 
-            },
-            "yesil": { 
-                name: "Yeşil Gövdeler – Aroid Mix", 
-                url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", 
-                desc: "Büyük yapraklı tropik bitkiler için özel olarak geliştirilmiş karışım. Hafif, havadar ve nem tutma kapasitesi yüksek." 
-            },
-            "tropik": { 
-                name: "Tropik Güç – Profesyonel Aroid Substrat", 
-                url: "https://www.minikormanbotanik.com/products/tropik-guc-guclu-ve-yetiskin-aroid-bitkiler-icin-substrat", 
-                desc: "Zorlu ve hassas aroid türleri için geliştirilmiş çok bileşenli profesyonel substrat. Yüksek hava geçirgenliği, kontrollü nem dengesi." 
-            },
-            "col": { 
-                name: "Çöl Esintisi – Succulent Mix", 
-                url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", 
-                desc: "Çöl kökenli bitkilerin doğal ortamını taklit eder: hızlı kurur, suyu tutmaz, köklerin nefes almasını sağlar." 
-            },
-            "orkide": { 
-                name: "Orkide Işıltısı", 
-                url: "https://www.minikormanbotanik.com/products/orkide-isiltisi", 
-                desc: "Epifit orkideler için özel olarak formüle edilmiş profesyonel bir karışım. Hafif yapısı sayesinde fazla suyu tutmaz." 
-            },
-            "hava": { 
-                name: "Hava Kökleri – Epifit Mix", 
-                url: "https://www.minikormanbotanik.com/products/hava-kokleri", 
-                desc: "Doğada ağaçlarda ya da kaya yüzeylerinde yaşayan, hava köklü bitkiler için özel geliştirilmiştir." 
-            },
-            "dogal": { 
-                name: "Doğal Gövde – Palmiye Substratı", 
-                url: "https://www.minikormanbotanik.com/products/dogal-govde", 
-                desc: "Palmiye ve ağaç formundaki bitkiler için hazırlanmış sade ve dengeli bir substrat." 
-            },
-            "guclu": { 
-                name: "Güçlü Gövde – Büyük Saksı Substratı", 
-                url: "https://www.minikormanbotanik.com/products/guclu-govde", 
-                desc: "Büyük saksılar, kadılar ve uzun süreli yetiştiricilik için geliştirilmiş çok bileşenli substrat." 
-            },
-            "kok": { 
-                name: "Kök Sihri – Çelik & Fide Karışımı", 
-                url: "https://www.minikormanbotanik.com/products/kok-sihri", 
-                desc: "Köklenme sürecinde olan çelikler ve genç fideler için özel hazırlanmış steril ve dengeli karışım." 
-            },
-            "mevsim": { 
-                name: "Mevsim Çiçeği – Balkon Substratı", 
-                url: "https://www.minikormanbotanik.com/products/mevsim-cicegi", 
-                desc: "Tek yıllık balkon çiçekleri için hazırlanmış hafif ve dengeli substrat. Hızlı köklenmeyi destekler." 
-            },
-            "ruzgar": { 
-                name: "Rüzgar Bahçesi – Dış Mekan Karışımı", 
-                url: "https://www.minikormanbotanik.com/products/ruzgar-bahcesi", 
-                desc: "Dış mekanda yetiştirilen süs çayırları, aromatik ve çok yıllık bitkiler için özel geliştirilmiştir." 
-            }
-        };
+    <div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
+    <div class="progress-label" id="progress-label">Soru 1 / 4</div>
 
-        let path = "";
-        let currentStep = 0;
-        let totalSteps = 5;
+    <div id="quiz"></div>
+    <div id="result" class="result"></div>
+</div>
 
-        const quizFlow = {
-            "start": {
-                q: "Bitkini nerede yetiştiriyorsun?",
-                options: [
-                    { text: "İç Mekan", next: "ic_grup" },
-                    { text: "Dış Mekan", next: "dis_grup" }
-                ]
-            },
-            "ic_grup": {
-                q: "Bitkin hangi gruba ait?",
-                options: [
-                    { text: "Genel ev bitkileri (Ficus, Pothos, Calathea)", next: "ic_buyukluk_genel" },
-                    { text: "Tropikal devler (Monstera, Philodendron, Anthurium)", next: "ic_buyukluk_tropik" },
-                    { text: "Kaktüs ve Succulents", next: "result_col" },
-                    { text: "Orkideler", next: "result_orkide" },
-                    { text: "Epifit/Hava köklü bitkiler (Hoya, Tillandsia)", next: "result_hava" },
-                    { text: "Palmiye veya ağaç formunda bitkiler", next: "ic_buyukluk_agac" }
-                ]
-            },
-            "ic_buyukluk_genel": {
-                q: "Bitkin ne kadar büyük?",
-                options: [
-                    { text: "Çok küçük / Çelik / Fide aşamasında", next: "result_kok" },
-                    { text: "Küçük saksı (0.5-3L)", next: "result_sihirli" },
-                    { text: "Orta saksı (3-10L)", next: "result_sihirli" },
-                    { text: "Büyük saksı (10L+)", next: "result_sihirli" }
-                ]
-            },
-            "ic_buyukluk_tropik": {
-                q: "Bitkin ne kadar büyük?",
-                options: [
-                    { text: "Çok küçük / Çelik / Fide aşamasında", next: "result_kok" },
-                    { text: "Küçük/Orta saksı (0.5-10L)", next: "result_yesil" },
-                    { text: "Büyük saksı (10L+)", next: "result_tropik" }
-                ]
-            },
-            "ic_buyukluk_agac": {
-                q: "Bitkin ne kadar büyük?",
-                options: [
-                    { text: "Orta saksı (3-10L)", next: "result_dogal" },
-                    { text: "Büyük saksı/kadı (10L+)", next: "result_guclu" }
-                ]
-            },
-            "dis_grup": {
-                q: "Ne yetiştiriyorsun?",
-                options: [
-                    { text: "Mevsimlik çiçekler (Petunya, Menekşe, Lobelya)", next: "result_mevsim" },
-                    { text: "Aromatik/Süs çayırları (Lavanta, Biberiye, Kekik)", next: "result_ruzgar" },
-                    { text: "Palmiye veya ağaç (açık havada)", next: "dis_agac_buyukluk" },
-                    { text: "Süs bitkileri (Ortanca, Gül, Cennet Kuşu)", next: "result_ruzgar" }
-                ]
-            },
-            "dis_agac_buyukluk": {
-                q: "Ne kadar büyük bir saksı/alan?",
-                options: [
-                    { text: "Orta saksı (3-10L)", next: "result_dogal" },
-                    { text: "Büyük kadı veya açık toprak", next: "result_guclu" }
-                ]
-            }
-        };
+<script>
+const products = {
+    sihirli: {
+        name: "Sihirli Toprak – Universal Mix",
+        url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi",
+        desc: "Popüler iç mekan bitkileri için güvenli ve dengeli bir temel. Hafif, havadar ve nem tutma dengesi mükemmel."
+    },
+    yesil: {
+        name: "Yeşil Gövdeler – Aroid Mix",
+        url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix",
+        desc: "Büyük yapraklı tropik bitkiler için özel olarak geliştirilmiş karışım. Hafif, havadar ve nem tutma kapasitesi yüksek."
+    },
+    tropik: {
+        name: "Tropik Güç – Profesyonel Aroid Substrat",
+        url: "https://www.minikormanbotanik.com/products/tropik-guc-guclu-ve-yetiskin-aroid-bitkiler-icin-substrat",
+        desc: "Zorlu ve hassas aroid türleri için geliştirilmiş çok bileşenli profesyonel substrat. Yüksek hava geçirgenliği, kontrollü nem dengesi."
+    },
+    col: {
+        name: "Çöl Esintisi – Succulent Mix",
+        url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix",
+        desc: "Çöl kökenli bitkilerin doğal ortamını taklit eder: hızlı kurur, suyu tutmaz, köklerin nefes almasını sağlar."
+    },
+    orkide: {
+        name: "Orkide Işıltısı",
+        url: "https://www.minikormanbotanik.com/products/orkide-isiltisi",
+        desc: "Epifit orkideler için özel olarak formüle edilmiş profesyonel bir karışım. Hafif yapısı sayesinde fazla suyu tutmaz."
+    },
+    hava: {
+        name: "Hava Kökleri – Epifit Mix",
+        url: "https://www.minikormanbotanik.com/products/hava-kokleri",
+        desc: "Doğada ağaçlarda ya da kaya yüzeylerinde yaşayan, hava köklü bitkiler için özel geliştirilmiştir."
+    },
+    dogal: {
+        name: "Doğal Gövde – Palmiye Substratı",
+        url: "https://www.minikormanbotanik.com/products/dogal-govde",
+        desc: "Palmiye ve ağaç formundaki bitkiler için hazırlanmış sade ve dengeli bir substrat."
+    },
+    guclu: {
+        name: "Güçlü Gövde – Büyük Saksı Substratı",
+        url: "https://www.minikormanbotanik.com/products/guclu-govde",
+        desc: "Büyük saksılar, kadılar ve uzun süreli yetiştiricilik için geliştirilmiş çok bileşenli substrat."
+    },
+    kok: {
+        name: "Kök Sihri – Çelik & Fide Karışımı",
+        url: "https://www.minikormanbotanik.com/products/kok-sihri",
+        desc: "Köklenme sürecinde olan çelikler ve genç fideler için özel hazırlanmış steril ve dengeli karışım."
+    },
+    mevsim: {
+        name: "Mevsim Çiçeği – Balkon Substratı",
+        url: "https://www.minikormanbotanik.com/products/mevsim-cicegi",
+        desc: "Tek yıllık balkon çiçekleri için hazırlanmış hafif ve dengeli substrat. Hızlı köklenmeyi destekler."
+    },
+    ruzgar: {
+        name: "Rüzgar Bahçesi – Dış Mekan Karışımı",
+        url: "https://www.minikormanbotanik.com/products/ruzgar-bahcesi",
+        desc: "Dış mekanda yetiştirilen süs çayırları, aromatik ve çok yıllık bitkiler için özel geliştirilmiştir."
+    }
+};
 
-        function render(step) {
-            const quiz = document.getElementById('quiz');
-            const data = quizFlow[step];
-            
-            if (!data) return;
-            
-            currentStep++;
-            updateProgress();
-            
-            let html = `<div class="question-box"><h2>${data.q}</h2>`;
-            data.options.forEach((opt, i) => {
-                html += `
-                    <div class="option" onclick="select('${opt.next}', this)">
-                        <input type="radio" name="q" id="opt${i}" value="${opt.next}">
-                        <label for="opt${i}">${opt.text}</label>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            
-            quiz.innerHTML = html;
-            window.scrollTo(0, 0);
-        }
+// Her node: { q, options: [{text, next}] }
+// next başında "result_" varsa sonuç göster
+const flow = {
+    start: {
+        q: "Bitkini nerede yetiştiriyorsun?",
+        options: [
+            { text: "İç Mekan", next: "ic_grup" },
+            { text: "Dış Mekan", next: "dis_grup" }
+        ]
+    },
 
-        function select(next, elem) {
-            document.querySelectorAll('.option').forEach(o => o.style.borderColor = 'transparent');
-            elem.style.borderColor = '#37563b';
-            
-            setTimeout(() => {
-                if (next.startsWith('result_')) {
-                    showResult(next.replace('result_', ''));
-                } else {
-                    render(next);
-                }
-            }, 300);
-        }
+    // ── İÇ MEKAN ──────────────────────────────────────────────
+    ic_grup: {
+        q: "Bitkin hangi gruba ait?",
+        options: [
+            { text: "Genel ev bitkileri (Ficus, Pothos, Calathea…)", next: "ic_genel_boyut" },
+            { text: "Tropikal devler (Monstera, Philodendron, Anthurium…)", next: "ic_tropik_boyut" },
+            { text: "Kaktüs ve Succulents", next: "ic_kaktus_boyut" },
+            { text: "Orkideler", next: "ic_orkide_boyut" },
+            { text: "Epifit / Hava köklü bitkiler (Hoya, Tillandsia…)", next: "ic_epifit_boyut" },
+            { text: "Palmiye veya ağaç formunda bitkiler (Dracaena, Yucca…)", next: "ic_agac_boyut" }
+        ]
+    },
 
-        function showResult(key) {
-            const product = products[key];
-            document.getElementById('quiz').style.display = 'none';
-            document.getElementById('progress').parentElement.style.display = 'none';
-            const result = document.getElementById('result');
-            result.style.display = 'block';
-            result.innerHTML = `
-                <h2>Sana En Uygun Toprak Karışımı</h2>
-                <p class="result-subtitle">Bitkinin için ideal substrat</p>
-                <div class="product-box">
-                    <h3>${product.name}</h3>
-                    <p>${product.desc}</p>
+    // Genel ev bitkisi
+    ic_genel_boyut: {
+        q: "Bitkin ne kadar büyük?",
+        options: [
+            { text: "Çok küçük / Çelik / Fide aşamasında", next: "ic_genel_fide_su" },
+            { text: "Küçük saksı (0,5–3 L)", next: "ic_genel_normal_su" },
+            { text: "Orta saksı (3–10 L)", next: "ic_genel_normal_su" },
+            { text: "Büyük saksı (10 L+)", next: "ic_genel_normal_su" }
+        ]
+    },
+    ic_genel_fide_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Sık sık (haftada 2–3 kez)", next: "result_kok" },
+            { text: "Orta (haftada 1 kez)", next: "result_kok" },
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_kok" }
+        ]
+    },
+    ic_genel_normal_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Sık sık (haftada 2–3 kez)", next: "result_sihirli" },
+            { text: "Orta (haftada 1 kez)", next: "result_sihirli" },
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_sihirli" }
+        ]
+    },
+
+    // Tropikal
+    ic_tropik_boyut: {
+        q: "Bitkin ne kadar büyük?",
+        options: [
+            { text: "Çok küçük / Çelik / Fide aşamasında", next: "ic_tropik_fide_su" },
+            { text: "Küçük / Orta saksı (0,5–10 L)", next: "ic_tropik_kucuk_su" },
+            { text: "Büyük saksı (10 L+)", next: "ic_tropik_buyuk_su" }
+        ]
+    },
+    ic_tropik_fide_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Sık sık (haftada 2–3 kez)", next: "result_kok" },
+            { text: "Orta (haftada 1 kez)", next: "result_kok" },
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_kok" }
+        ]
+    },
+    ic_tropik_kucuk_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Sık sık (haftada 2–3 kez)", next: "result_yesil" },
+            { text: "Orta (haftada 1 kez)", next: "result_yesil" },
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_yesil" }
+        ]
+    },
+    ic_tropik_buyuk_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Sık sık (haftada 2–3 kez)", next: "result_tropik" },
+            { text: "Orta (haftada 1 kez)", next: "result_tropik" },
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_tropik" }
+        ]
+    },
+
+    // Kaktüs / Succulent
+    ic_kaktus_boyut: {
+        q: "Bitkin ne kadar büyük?",
+        options: [
+            { text: "Küçük / Orta saksı (0,5–10 L)", next: "ic_kaktus_su" },
+            { text: "Büyük saksı (10 L+)", next: "ic_kaktus_su" }
+        ]
+    },
+    ic_kaktus_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_col" },
+            { text: "Orta (haftada 1 kez)", next: "result_col" }
+        ]
+    },
+
+    // Orkide
+    ic_orkide_boyut: {
+        q: "Bitkin ne kadar büyük?",
+        options: [
+            { text: "Küçük saksı (0,5–3 L)", next: "ic_orkide_su" },
+            { text: "Orta saksı (3–10 L)", next: "ic_orkide_su" },
+            { text: "Büyük saksı (10 L+)", next: "ic_orkide_su" }
+        ]
+    },
+    ic_orkide_su: {
+        q: "Ne sıklıkla su veriyorsun?",
+        options: [
+            { text: "Sık sık (haftada 2–3 kez)", next: "result_orkide" },
+            { text: "Orta (haftada 1 kez)", next: "result_orkide" },
+            { text: "Seyrek (15+ günde 1 kez)", next: "result_orkide" }
+        ]
+    },
+
+    // Epifit / Hava köklü
+    ic_epifit_boyut: {
+        q: "Bitkin ne kadar büyük?",
+        options: [
+            { text: "Küçük / Orta saksı (0,5–10 L)", next: "ic_epifit_isik" },
+            { text: "Büyük saksı (10 L+)", next: "ic_epifit_isik" }
+        ]
+    },
+    ic_epifit_isik: {
+        q: "Bitkin ne kadar ışık alıyor?",
+        options: [
+            { text: "Parlak dolaylı ışık", next: "result_hava" },
+            { text: "Orta ışık", next: "result_hava" },
+            { text: "Az ışık", next: "result_hava" }
+        ]
+    },
+
+    // Palmiye / Ağaç
+    ic_agac_boyut: {
+        q: "Bitkin ne kadar büyük?",
+        options: [
+            { text: "Orta saksı (3–10 L)", next: "ic_agac_isik" },
+            { text: "Büyük saksı / Kadı (10 L+)", next: "ic_agac_buyuk_isik" }
+        ]
+    },
+    ic_agac_isik: {
+        q: "Bitkin ne kadar ışık alıyor?",
+        options: [
+            { text: "Parlak dolaylı ışık", next: "result_dogal" },
+            { text: "Orta ışık", next: "result_dogal" },
+            { text: "Az ışık", next: "result_dogal" }
+        ]
+    },
+    ic_agac_buyuk_isik: {
+        q: "Bitkin ne kadar ışık alıyor?",
+        options: [
+            { text: "Parlak dolaylı ışık", next: "result_guclu" },
+            { text: "Orta ışık", next: "result_guclu" },
+            { text: "Az ışık", next: "result_guclu" }
+        ]
+    },
+
+    // ── DIŞ MEKAN ─────────────────────────────────────────────
+    dis_grup: {
+        q: "Ne yetiştiriyorsun?",
+        options: [
+            { text: "Mevsimlik çiçekler (Petunya, Menekşe, Lobelya…)", next: "dis_mevsim_ortam" },
+            { text: "Aromatik / Süs çayırları (Lavanta, Biberiye, Kekik…)", next: "dis_ruzgar_ortam" },
+            { text: "Palmiye veya ağaç (açık havada)", next: "dis_agac_boyut" },
+            { text: "Süs bitkileri (Ortanca, Gül, Cennet Kuşu…)", next: "dis_sus_ortam" }
+        ]
+    },
+
+    // Mevsimlik çiçek
+    dis_mevsim_ortam: {
+        q: "Nerede yetiştiriyorsun?",
+        options: [
+            { text: "Saksı / Balkon kasası", next: "dis_mevsim_iklim" },
+            { text: "Açık toprak / Bahçe", next: "dis_mevsim_iklim" }
+        ]
+    },
+    dis_mevsim_iklim: {
+        q: "Bölgenin iklimi nasıl?",
+        options: [
+            { text: "Sıcak ve kurak", next: "result_mevsim" },
+            { text: "Nemli ve yağışlı", next: "result_mevsim" },
+            { text: "Rüzgarlı / Açık alan", next: "result_mevsim" }
+        ]
+    },
+
+    // Aromatik / Süs çayırı
+    dis_ruzgar_ortam: {
+        q: "Nerede yetiştiriyorsun?",
+        options: [
+            { text: "Saksı / Balkon kasası", next: "dis_ruzgar_iklim" },
+            { text: "Açık toprak / Bahçe", next: "dis_ruzgar_iklim" }
+        ]
+    },
+    dis_ruzgar_iklim: {
+        q: "Bölgenin iklimi nasıl?",
+        options: [
+            { text: "Sıcak ve kurak", next: "result_ruzgar" },
+            { text: "Nemli ve yağışlı", next: "result_ruzgar" },
+            { text: "Rüzgarlı / Açık alan", next: "result_ruzgar" }
+        ]
+    },
+
+    // Süs bitkisi
+    dis_sus_ortam: {
+        q: "Nerede yetiştiriyorsun?",
+        options: [
+            { text: "Saksı / Balkon kasası", next: "dis_sus_iklim" },
+            { text: "Açık toprak / Bahçe", next: "dis_sus_iklim" }
+        ]
+    },
+    dis_sus_iklim: {
+        q: "Bölgenin iklimi nasıl?",
+        options: [
+            { text: "Sıcak ve kurak", next: "result_ruzgar" },
+            { text: "Nemli ve yağışlı", next: "result_ruzgar" },
+            { text: "Rüzgarlı / Açık alan", next: "result_ruzgar" }
+        ]
+    },
+
+    // Dış mekan palmiye/ağaç
+    dis_agac_boyut: {
+        q: "Ne kadar büyük bir saksı / alan?",
+        options: [
+            { text: "Orta saksı (3–10 L)", next: "dis_agac_iklim_dogal" },
+            { text: "Büyük kadı veya açık toprak", next: "dis_agac_iklim_guclu" }
+        ]
+    },
+    dis_agac_iklim_dogal: {
+        q: "Bölgenin iklimi nasıl?",
+        options: [
+            { text: "Sıcak ve kurak", next: "result_dogal" },
+            { text: "Nemli ve yağışlı", next: "result_dogal" },
+            { text: "Rüzgarlı / Açık alan", next: "result_dogal" }
+        ]
+    },
+    dis_agac_iklim_guclu: {
+        q: "Bölgenin iklimi nasıl?",
+        options: [
+            { text: "Sıcak ve kurak", next: "result_guclu" },
+            { text: "Nemli ve yağışlı", next: "result_guclu" },
+            { text: "Rüzgarlı / Açık alan", next: "result_guclu" }
+        ]
+    }
+};
+
+let stepNum = 0;
+const TOTAL = 4;
+
+function render(key) {
+    const node = flow[key];
+    if (!node) return;
+
+    stepNum++;
+    const pct = Math.min((stepNum / TOTAL) * 100, 100);
+    document.getElementById('progress').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = 'Soru ' + stepNum + ' / ' + TOTAL;
+
+    const html = `
+        <div class="question-box">
+            <h2>${node.q}</h2>
+            ${node.options.map((o, i) => `
+                <div class="option" id="opt-wrap-${i}" onclick="choose('${o.next}', ${i})">
+                    <input type="radio" name="q" id="opt${i}">
+                    <label for="opt${i}">${o.text}</label>
                 </div>
-                <a href="${product.url}" class="buy-btn">Satın Al →</a>
-                <button class="back-btn" onclick="location.reload()">← Baştan Başla</button>
-            `;
-            window.scrollTo(0, 0);
-        }
+            `).join('')}
+        </div>`;
+    document.getElementById('quiz').innerHTML = html;
+    window.scrollTo(0, 0);
+}
 
-        function updateProgress() {
-            const percent = (currentStep / totalSteps) * 100;
-            document.getElementById('progress').style.width = percent + '%';
+function choose(next, idx) {
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('opt-wrap-' + idx).classList.add('selected');
+    setTimeout(() => {
+        if (next.startsWith('result_')) {
+            showResult(next.replace('result_', ''));
+        } else {
+            render(next);
         }
+    }, 280);
+}
 
-        render('start');
-    </script>
+function showResult(key) {
+    const p = products[key];
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('progress-label').textContent = 'Tamamlandı';
+    document.getElementById('quiz').style.display = 'none';
+
+    const el = document.getElementById('result');
+    el.style.display = 'block';
+    el.innerHTML = `
+        <h2>Sana En Uygun Toprak Karışımı</h2>
+        <p class="result-subtitle">Bitkinin için ideal substrat</p>
+        <div class="product-box">
+            <h3>${p.name}</h3>
+            <p>${p.desc}</p>
+        </div>
+        <a href="${p.url}" class="buy-btn" target="_blank">Satın Al →</a>
+        <button class="back-btn" onclick="location.reload()">← Baştan Başla</button>
+    `;
+    window.scrollTo(0, 0);
+}
+
+render('start');
+</script>
 </body>
 </html>

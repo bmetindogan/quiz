@@ -6,537 +6,364 @@
     <title>Bana Uygun Toprağı Bul - Minik Orman</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
+        body { 
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #fbf9f4;
             padding: 2rem 1rem;
             min-height: 100vh;
         }
-        .container { max-width: 620px; margin: 0 auto; }
-        h1 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 32px;
+        .container { max-width: 650px; margin: 0 auto; }
+        h1 { 
+            font-family: 'Georgia', serif;
+            font-size: clamp(28px, 5vw, 36px);
             color: #37563b;
             text-align: center;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
         .subtitle {
             text-align: center;
             color: #424841;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             font-size: 15px;
         }
-        .progress-bar {
+        .progress {
             background: #e4e2dd;
-            border-radius: 8px;
             height: 6px;
+            border-radius: 10px;
             margin-bottom: 2rem;
             overflow: hidden;
         }
-        .progress-fill {
+        .progress-bar {
             background: #37563b;
             height: 100%;
-            border-radius: 8px;
-            transition: width 0.4s ease;
+            transition: width 0.3s;
         }
         .question-box {
             background: #fff;
-            padding: 1.75rem;
+            padding: 1.8rem;
             border-radius: 16px;
             margin-bottom: 1.5rem;
             border: 1px solid #e4e2dd;
         }
-        .question-label {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #37563b;
-            margin-bottom: 0.6rem;
-        }
         .question-box h2 {
-            font-family: 'Playfair Display', Georgia, serif;
+            font-family: 'Georgia', serif;
             font-size: 19px;
-            color: #1b1c19;
-            margin-bottom: 1.25rem;
-            line-height: 1.4;
+            color: #37563b;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
         }
         .option {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
+            background: #f5f3ee;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 12px 14px;
             margin-bottom: 10px;
             cursor: pointer;
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1.5px solid #e4e2dd;
-            transition: border-color 0.15s, background 0.15s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .option:hover { border-color: #37563b; background: #f5f9f5; }
+        .option:hover {
+            border-color: #37563b;
+            background: #fff;
+        }
         .option input[type="radio"] {
             cursor: pointer;
-            width: 17px;
-            height: 17px;
+            width: 18px;
+            height: 18px;
             accent-color: #37563b;
-            margin-top: 2px;
-            flex-shrink: 0;
         }
         .option label {
             flex: 1;
             cursor: pointer;
-            font-size: 14.5px;
+            font-size: 15px;
             color: #1b1c19;
-            line-height: 1.45;
         }
-        .option label small {
-            display: block;
-            font-size: 12px;
-            color: #6b7068;
-            margin-top: 2px;
-        }
-        .btn-row { display: flex; gap: 10px; }
         button {
-            flex: 1;
+            display: block;
+            width: 100%;
             background: #37563b;
             color: #fff;
             border: none;
-            padding: 14px;
+            padding: 15px;
             border-radius: 12px;
             font-weight: 600;
             font-size: 15px;
             cursor: pointer;
             transition: background 0.2s;
+            margin-top: 1rem;
         }
         button:hover { background: #4f6f52; }
-        button.secondary {
-            background: #fff;
-            color: #37563b;
-            border: 1.5px solid #37563b;
+        button:disabled { 
+            background: #c2c8bf; 
+            cursor: not-allowed; 
         }
-        button.secondary:hover { background: #f5f9f5; }
-        .result { display: none; }
-        .result-header {
+        .result {
+            display: none;
             text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .result-header h2 {
-            font-family: 'Playfair Display', Georgia, serif;
-            color: #37563b;
-            font-size: 22px;
-            margin-bottom: 0.4rem;
-        }
-        .result-header p { color: #424841; font-size: 14px; }
-        .product-box {
             background: #fff;
-            padding: 1.5rem;
+            padding: 2.5rem 2rem;
             border-radius: 16px;
-            margin-bottom: 1rem;
             border: 1px solid #e4e2dd;
         }
-        .product-tag {
-            display: inline-block;
-            background: #eaf3de;
-            color: #3B6D11;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-bottom: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .product-box h3 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 20px;
+        .result h2 {
+            font-family: 'Georgia', serif;
             color: #37563b;
             margin-bottom: 0.5rem;
+            font-size: 22px;
+        }
+        .result-subtitle {
+            color: #424841;
+            font-size: 14px;
+            margin-bottom: 2rem;
+        }
+        .product-box {
+            background: #f5f3ee;
+            padding: 1.8rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .product-box h3 {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            color: #37563b;
+            margin-bottom: 0.8rem;
         }
         .product-box p {
-            font-size: 13.5px;
+            font-size: 14px;
             color: #424841;
-            line-height: 1.55;
+            line-height: 1.6;
         }
         .buy-btn {
-            display: block;
-            width: 100%;
             background: #37563b;
             color: #fff;
-            padding: 14px;
+            padding: 14px 36px;
             border: none;
             border-radius: 12px;
             text-decoration: none;
-            text-align: center;
+            display: inline-block;
             font-weight: 600;
             font-size: 15px;
             cursor: pointer;
-            margin-top: 1rem;
             transition: background 0.2s;
         }
         .buy-btn:hover { background: #4f6f52; }
-        .restart-btn {
-            display: block;
-            width: 100%;
-            background: #fff;
+        .back-btn {
+            background: transparent;
             color: #37563b;
-            border: 1.5px solid #37563b;
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 600;
+            border: 1px solid #c2c8bf;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            margin-top: 0.75rem;
-            transition: background 0.2s;
-        }
-        .restart-btn:hover { background: #f5f9f5; }
-        .note {
-            background: #f5f9f5;
-            border-left: 3px solid #37563b;
-            padding: 10px 14px;
-            border-radius: 0 8px 8px 0;
-            font-size: 13px;
-            color: #424841;
             margin-top: 1rem;
+        }
+        .back-btn:hover { 
+            background: #f5f3ee; 
+            border-color: #37563b;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌿 Bana Uygun Toprağı Bul</h1>
-        <p class="subtitle">Birkaç soruya cevap ver, sana en uygun toprak karışımını bulalım</p>
-
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress" style="width:0%"></div>
-        </div>
-
+        <h1>Bana Uygun Toprağı Bul</h1>
+        <p class="subtitle">Birkaç soruya cevap ver, sana en uygun toprak karışımını önerelim</p>
+        
+        <div class="progress"><div class="progress-bar" id="progress"></div></div>
+        
         <div id="quiz"></div>
         <div id="result" class="result"></div>
     </div>
 
     <script>
-        const questions = [
-            {
-                id: "q1",
-                label: "Soru 1 / 5",
-                q: "Bitkini nerede yetiştiriyorsun?",
-                options: [
-                    { text: "İç mekanda", sub: "Ev, ofis, pencere önü", value: "indoor" },
-                    { text: "Dış mekanda", sub: "Balkon, teras, bahçe", value: "outdoor" }
-                ]
+        const products = {
+            "sihirli": { 
+                name: "Sihirli Toprak – Universal Mix", 
+                url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi", 
+                desc: "Popüler iç mekan bitkileri için güvenli ve dengeli bir temel. Hafif, havadar ve nem tutma dengesi mükemmel." 
             },
-            {
-                id: "q2",
-                label: "Soru 2 / 5",
-                q: "Bitkinin türü nedir?",
-                options: [
-                    { text: "Aroid / tropikal büyük yapraklı", sub: "Monstera, Philodendron, Anthurium, Alocasia, Epipremnum...", value: "aroid" },
-                    { text: "Kaktüs veya sukulent", sub: "Echeveria, Aloe, Crassula, Opuntia, Lithops, Sansevieria...", value: "succulent" },
-                    { text: "Orkide", sub: "Phalaenopsis, Dendrobium, Oncidium, Cattleya...", value: "orchid" },
-                    { text: "Epifit / hava kökü bitki", sub: "Tillandsia, Hoya, Dischidia, Rhipsalis, Bromeliaceae...", value: "epiphyte" },
-                    { text: "Palmiye, ağaç veya odunsu", sub: "Ficus, Dracaena, Yucca, Palmiye, Zeytin, Narenciye...", value: "tree" },
-                    { text: "Genel iç mekan", sub: "Calathea, Pilea, Peperomia, Dieffenbachia, Spathiphyllum...", value: "general" },
-                    { text: "Çelik veya genç fide", sub: "Köklenme aşamasında olan bitkiler", value: "cutting" }
-                ]
+            "yesil": { 
+                name: "Yeşil Gövdeler – Aroid Mix", 
+                url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix", 
+                desc: "Büyük yapraklı tropik bitkiler için özel olarak geliştirilmiş karışım. Hafif, havadar ve nem tutma kapasitesi yüksek." 
             },
-            {
-                id: "q2b",
-                label: "Soru 2 / 5",
-                q: "Hangi dış mekan bitkisi?",
-                options: [
-                    { text: "Mevsimlik balkon çiçeği", sub: "Petunya, Lobelya, Karanfil, Papatya, Zinya...", value: "seasonal" },
-                    { text: "Çok yıllık veya aromatik", sub: "Lavanta, Biberiye, Adaçayı, Gül, Ortanca, Strelitzia...", value: "perennial" },
-                    { text: "Palmiye veya ağaç (dış mekan)", sub: "Açık alandaki ağaç formundaki bitkiler", value: "outdoor_tree" }
-                ]
+            "tropik": { 
+                name: "Tropik Güç – Profesyonel Aroid Substrat", 
+                url: "https://www.minikormanbotanik.com/products/tropik-guc-guclu-ve-yetiskin-aroid-bitkiler-icin-substrat", 
+                desc: "Zorlu ve hassas aroid türleri için geliştirilmiş çok bileşenli profesyonel substrat. Yüksek hava geçirgenliği, kontrollü nem dengesi." 
             },
-            {
-                id: "q3",
-                label: "Soru 3 / 5",
-                q: "Bitkinin yaşı ve büyüklüğü nedir?",
-                options: [
-                    { text: "Genç / küçük bitki", sub: "Küçük saksı, yeni alınmış veya köklenme aşamasında", value: "young" },
-                    { text: "Orta boy yetişkin", sub: "Normal ev saksısı büyüklüğünde", value: "medium" },
-                    { text: "Büyük / yetişkin bitki", sub: "Büyük saksı, kadı veya uzun süreli yetiştirme", value: "large" }
-                ]
+            "col": { 
+                name: "Çöl Esintisi – Succulent Mix", 
+                url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix", 
+                desc: "Çöl kökenli bitkilerin doğal ortamını taklit eder: hızlı kurur, suyu tutmaz, köklerin nefes almasını sağlar." 
             },
-            {
-                id: "q4",
-                label: "Soru 4 / 5",
-                q: "Ne sıklıkla suluyorsun?",
-                options: [
-                    { text: "Sık (haftada 2-3 kez)", value: "frequent" },
-                    { text: "Orta (haftada 1 kez)", value: "moderate" },
-                    { text: "Nadir (15 günde bir veya daha seyrek)", value: "rarely" }
-                ]
+            "orkide": { 
+                name: "Orkide Işıltısı", 
+                url: "https://www.minikormanbotanik.com/products/orkide-isiltisi", 
+                desc: "Epifit orkideler için özel olarak formüle edilmiş profesyonel bir karışım. Hafif yapısı sayesinde fazla suyu tutmaz." 
             },
-            {
-                id: "q5",
-                label: "Soru 5 / 5",
-                q: "Deneyim seviyeni nasıl tanımlarsın?",
-                options: [
-                    { text: "Yeni başlayan", sub: "Kolay ve affedici bir karışım tercih ederim", value: "beginner" },
-                    { text: "Deneyimli", sub: "Özelleşmiş, profesyonel karışımları deneyebilirim", value: "experienced" }
-                ]
-            }
-        ];
-
-        // Ürün tanımları
-        const allProducts = {
-            col_esintisi: {
-                tag: "Kaktüs & Sukulent",
-                name: "Çöl Esintisi - Sukulent ve Kaktüsler İçin Özel Toprak Karışımı",
-                desc: "Çöl kökenli bitkiler için özel formül. Hızlı kurur, suyu tutmaz, kök çürümesini önler. Türkiye'nin sıcak iklimine uygun.",
-                url: "https://www.minikormanbotanik.com/products/col-esintisi-succulent-mix"
+            "hava": { 
+                name: "Hava Kökleri – Epifit Mix", 
+                url: "https://www.minikormanbotanik.com/products/hava-kokleri", 
+                desc: "Doğada ağaçlarda ya da kaya yüzeylerinde yaşayan, hava köklü bitkiler için özel geliştirilmiştir." 
             },
-            sihirli_toprak: {
-                tag: "Genel İç Mekan",
-                name: "Sihirli Toprak - Genel Kullanım İçin Özel Toprak Karışımı",
-                desc: "İç mekan bitkilerinin %80'i için dengeli ve güvenli bir temel. Hafif, havadar, nem tutma dengesi mükemmel. Yeni başlayanlar için ideal.",
-                url: "https://www.minikormanbotanik.com/products/sihirli-toprak-genel-kullanim-icin-ozel-toprak-karisimi"
+            "dogal": { 
+                name: "Doğal Gövde – Palmiye Substratı", 
+                url: "https://www.minikormanbotanik.com/products/dogal-govde", 
+                desc: "Palmiye ve ağaç formundaki bitkiler için hazırlanmış sade ve dengeli bir substrat." 
             },
-            yesil_govdeler: {
-                tag: "Aroid – Orta Boy",
-                name: "Yeşil Gövdeler - Aroid Bitkiler İçin Özel Toprak Karışımı",
-                desc: "Büyük yapraklı tropik bitkiler için hafif ve havadar karışım. Çam kabuğu, kömür ve vermikülit destekli. Şeffaf saksılar için ideal.",
-                url: "https://www.minikormanbotanik.com/products/yesil-govdeler-aroid-mix"
+            "guclu": { 
+                name: "Güçlü Gövde – Büyük Saksı Substratı", 
+                url: "https://www.minikormanbotanik.com/products/guclu-govde", 
+                desc: "Büyük saksılar, kadılar ve uzun süreli yetiştiricilik için geliştirilmiş çok bileşenli substrat." 
             },
-            tropik_guc: {
-                tag: "Aroid – Yetişkin / Profesyonel",
-                name: "Tropik Güç - Güçlü ve Yetişkin Aroid Bitkiler İçin Substrat",
-                desc: "9 bileşenli profesyonel formül. Yetişkin ve variegata aroidler için yüksek hava geçirgenliği, kontrollü nem ve uzun süreli stabilite.",
-                url: "https://www.minikormanbotanik.com/products/tropik-guc"
+            "kok": { 
+                name: "Kök Sihri – Çelik & Fide Karışımı", 
+                url: "https://www.minikormanbotanik.com/products/kok-sihri", 
+                desc: "Köklenme sürecinde olan çelikler ve genç fideler için özel hazırlanmış steril ve dengeli karışım." 
             },
-            orkide_isiltisi: {
-                tag: "Orkide",
-                name: "Orkide Işıltısı - Orkideler İçin Özel Toprak Karışımı",
-                desc: "Epifit orkideler için profesyonel karışım. İri çam kabuğu, hindistan cevizi parçaları ve kömür ile hızlı kuruma ve doğal koruma.",
-                url: "https://www.minikormanbotanik.com/products/orkide-isiltisi-orkideler-icin-ozel-toprak-karisimi"
+            "mevsim": { 
+                name: "Mevsim Çiçeği – Balkon Substratı", 
+                url: "https://www.minikormanbotanik.com/products/mevsim-cicegi", 
+                desc: "Tek yıllık balkon çiçekleri için hazırlanmış hafif ve dengeli substrat. Hızlı köklenmeyi destekler." 
             },
-            hava_kokleri: {
-                tag: "Epifit",
-                name: "Hava Kökleri - Diğer Epifitler İçin Özel Toprak Karışımı",
-                desc: "Ağaçlarda ve kaya yüzeylerinde yaşayan bitkiler için hafif ve havadar karışım. Tillandsia, Hoya, Dischidia ve benzerleri için ideal.",
-                url: "https://www.minikormanbotanik.com/products/hava-kokleri-epifitler-icin-ozel-toprak-karisimi"
-            },
-            dogal_govde: {
-                tag: "Palmiye & Ağaç – Orta Boy",
-                name: "Doğal Gövde - Palmiyeler ve Ağaçlar İçin Substrat",
-                desc: "Palmiye ve ağaç formlu bitkiler için dengeli ve sade karışım. 10 litreye kadar saksılar için idealdir.",
-                url: "https://www.minikormanbotanik.com/products/dogal-govde"
-            },
-            guclu_govde: {
-                tag: "Palmiye & Ağaç – Büyük Saksı",
-                name: "Güçlü Gövde — Büyük Saksılar ve Kadılar İçin Güçlendirilmiş Palmiye ve Ağaç Substratı",
-                desc: "Büyük saksılar, kadılar ve uzun süreli yetiştirme için mineral ağırlıklı, yapısal olarak dayanıklı profesyonel substrat.",
-                url: "https://www.minikormanbotanik.com/products/guclu-govde"
-            },
-            kok_sihri: {
-                tag: "Çelik & Fide",
-                name: "Kök Sihri - Çelik ve Fideler İçin Özel Toprak Karışımı",
-                desc: "Köklenme aşamasındaki çelikler ve genç fideler için steril, hafif karışım. Besin yükü taşımaz, kök yanmasını önler.",
-                url: "https://www.minikormanbotanik.com/products/kok-sihri-celik-ve-fideler-icin-ozel-toprak-karisimi"
-            },
-            mevsim_cicegi: {
-                tag: "Balkon Çiçeği",
-                name: "Mevsim Çiçeği — Tek Yıllık Balkon Çiçekleri İçin Hafif Substrat",
-                desc: "Tek yıllık balkon çiçekleri için hafif ve dengeli karışım. Petunya, Lobelya, Karanfil, Papatya ve tüm mevsimlik bitkiler için.",
-                url: "https://www.minikormanbotanik.com/products/mevsim-cicegi"
-            },
-            ruzgar_bahcesi: {
-                tag: "Dış Mekan",
-                name: "Rüzgar Bahçesi - Dış Mekan Süs Bitkileri İçin Özel Toprak Karışımı",
-                desc: "Çok yıllık ve aromatik dış mekan bitkileri için kuraklığa dayanıklı karışım. Rüzgarda yapısını korur, kompost katkılı.",
-                url: "https://www.minikormanbotanik.com/products/ruzgar-bahcesi-dis-mekan-sus-bitkileri-icin-ozel-toprak-karisimi"
+            "ruzgar": { 
+                name: "Rüzgar Bahçesi – Dış Mekan Karışımı", 
+                url: "https://www.minikormanbotanik.com/products/ruzgar-bahcesi", 
+                desc: "Dış mekanda yetiştirilen süs çayırları, aromatik ve çok yıllık bitkiler için özel geliştirilmiştir." 
             }
         };
 
-        // Yönlendirme mantığı
-        function getProduct(answers) {
-            const loc = answers.q1;
-            const type = loc === "outdoor" ? answers.q2b : answers.q2;
-            const size = answers.q3;
-            const water = answers.q4;
-            const exp = answers.q5;
-
-            // Dış mekan
-            if (loc === "outdoor") {
-                if (type === "seasonal") return allProducts.mevsim_cicegi;
-                if (type === "outdoor_tree") {
-                    return size === "large" ? allProducts.guclu_govde : allProducts.dogal_govde;
-                }
-                return allProducts.ruzgar_bahcesi; // perennial
-            }
-
-            // İç mekan
-            if (type === "cutting") return allProducts.kok_sihri;
-            if (type === "orchid") return allProducts.orkide_isiltisi;
-            if (type === "epiphyte") return allProducts.hava_kokleri;
-            if (type === "succulent") return allProducts.col_esintisi;
-
-            if (type === "aroid") {
-                if (size === "large" || exp === "experienced") return allProducts.tropik_guc;
-                return allProducts.yesil_govdeler;
-            }
-
-            if (type === "tree") {
-                if (size === "large") return allProducts.guclu_govde;
-                return allProducts.dogal_govde;
-            }
-
-            // general
-            if (exp === "experienced" && water === "rarely") return allProducts.sihirli_toprak;
-            return allProducts.sihirli_toprak;
-        }
-
-        // Soru akışı: hangi soruyu göstereceğiz?
-        function getFlow(answers) {
-            const flow = ["q1"];
-            if (!answers.q1) return flow;
-            if (answers.q1 === "indoor") {
-                flow.push("q2");
-            } else {
-                flow.push("q2b");
-            }
-            if (!answers.q2) return flow;
-            // q3 sadece aroid, tree, outdoor_tree için göster
-            const t = answers.q2;
-            if (["aroid", "tree", "outdoor_tree"].includes(t)) {
-                flow.push("q3");
-            }
-            // q4 ve q5 herkese
-            const lastQ = flow[flow.length - 1];
-            if (answers[lastQ] !== undefined || !["aroid","tree","outdoor_tree"].includes(t)) {
-                flow.push("q4");
-                flow.push("q5");
-            }
-            return flow;
-        }
-
-        let answers = {};
+        let path = "";
         let currentStep = 0;
+        let totalSteps = 5;
 
-        function getActiveFlow() {
-            const flow = ["q1"];
-            if (answers.q1 === undefined) return flow;
-            if (answers.q1 === "indoor") {
-                flow.push("q2");
-                const t = answers.q2;
-                if (t === undefined) return flow;
-                if (["aroid", "tree"].includes(t)) flow.push("q3");
-            } else {
-                flow.push("q2b");
-                const t = answers.q2b;
-                if (t === undefined) return flow;
-                if (t === "outdoor_tree") flow.push("q3");
+        const quizFlow = {
+            "start": {
+                q: "Bitkini nerede yetiştiriyorsun?",
+                options: [
+                    { text: "İç Mekan", next: "ic_grup" },
+                    { text: "Dış Mekan", next: "dis_grup" }
+                ]
+            },
+            "ic_grup": {
+                q: "Bitkin hangi gruba ait?",
+                options: [
+                    { text: "Genel ev bitkileri (Ficus, Pothos, Calathea)", next: "ic_buyukluk_genel" },
+                    { text: "Tropikal devler (Monstera, Philodendron, Anthurium)", next: "ic_buyukluk_tropik" },
+                    { text: "Kaktüs ve Succulents", next: "result_col" },
+                    { text: "Orkideler", next: "result_orkide" },
+                    { text: "Epifit/Hava köklü bitkiler (Hoya, Tillandsia)", next: "result_hava" },
+                    { text: "Palmiye veya ağaç formunda bitkiler", next: "ic_buyukluk_agac" }
+                ]
+            },
+            "ic_buyukluk_genel": {
+                q: "Bitkin ne kadar büyük?",
+                options: [
+                    { text: "Çok küçük / Çelik / Fide aşamasında", next: "result_kok" },
+                    { text: "Küçük saksı (0.5-3L)", next: "result_sihirli" },
+                    { text: "Orta saksı (3-10L)", next: "result_sihirli" },
+                    { text: "Büyük saksı (10L+)", next: "result_sihirli" }
+                ]
+            },
+            "ic_buyukluk_tropik": {
+                q: "Bitkin ne kadar büyük?",
+                options: [
+                    { text: "Çok küçük / Çelik / Fide aşamasında", next: "result_kok" },
+                    { text: "Küçük/Orta saksı (0.5-10L)", next: "result_yesil" },
+                    { text: "Büyük saksı (10L+)", next: "result_tropik" }
+                ]
+            },
+            "ic_buyukluk_agac": {
+                q: "Bitkin ne kadar büyük?",
+                options: [
+                    { text: "Orta saksı (3-10L)", next: "result_dogal" },
+                    { text: "Büyük saksı/kadı (10L+)", next: "result_guclu" }
+                ]
+            },
+            "dis_grup": {
+                q: "Ne yetiştiriyorsun?",
+                options: [
+                    { text: "Mevsimlik çiçekler (Petunya, Menekşe, Lobelya)", next: "result_mevsim" },
+                    { text: "Aromatik/Süs çayırları (Lavanta, Biberiye, Kekik)", next: "result_ruzgar" },
+                    { text: "Palmiye veya ağaç (açık havada)", next: "dis_agac_buyukluk" },
+                    { text: "Süs bitkileri (Ortanca, Gül, Cennet Kuşu)", next: "result_ruzgar" }
+                ]
+            },
+            "dis_agac_buyukluk": {
+                q: "Ne kadar büyük bir saksı/alan?",
+                options: [
+                    { text: "Orta saksı (3-10L)", next: "result_dogal" },
+                    { text: "Büyük kadı veya açık toprak", next: "result_guclu" }
+                ]
             }
-            flow.push("q4");
-            flow.push("q5");
-            return flow;
-        }
+        };
 
-        function getQuestion(qid) {
-            return questions.find(q => q.id === qid);
-        }
-
-        function render() {
-            const flow = getActiveFlow();
-            const totalSteps = flow.length; // estimate
-            const progress = Math.round((currentStep / Math.max(flow.length, 5)) * 100);
-            document.getElementById("progress").style.width = Math.min(progress, 95) + "%";
-
-            const qid = flow[currentStep];
-            if (!qid) { showResult(); return; }
-            const q = getQuestion(qid);
-            if (!q) { showResult(); return; }
-
-            let html = `<div class="question-box">
-                <div class="question-label">${q.label}</div>
-                <h2>${q.q}</h2>`;
-
-            q.options.forEach((opt, i) => {
-                html += `<label class="option">
-                    <input type="radio" name="current" value="${opt.value}" ${answers[qid] === opt.value ? "checked" : ""}>
-                    <span class="option-label">
-                        ${opt.text}
-                        ${opt.sub ? `<small>${opt.sub}</small>` : ""}
-                    </span>
-                </label>`;
-            });
-
-            html += `</div>`;
-
-            const isLast = currentStep >= getActiveFlow().length - 1;
-            html += `<div class="btn-row">`;
-            if (currentStep > 0) {
-                html += `<button class="secondary" onclick="goBack()">← Geri</button>`;
-            }
-            html += `<button onclick="${isLast ? 'finish()' : 'next()'}">${isLast ? 'Sonucu Göster 🌿' : 'Sonraki →'}</button>`;
-            html += `</div>`;
-
-            document.getElementById("quiz").innerHTML = html;
-            document.getElementById("result").style.display = "none";
-            document.getElementById("quiz").style.display = "block";
-        }
-
-        function next() {
-            const flow = getActiveFlow();
-            const qid = flow[currentStep];
-            const selected = document.querySelector('input[name="current"]:checked');
-            if (!selected) { alert("Lütfen bir seçenek seç"); return; }
-            answers[qid] = selected.value;
+        function render(step) {
+            const quiz = document.getElementById('quiz');
+            const data = quizFlow[step];
+            
+            if (!data) return;
+            
             currentStep++;
-            render();
+            updateProgress();
+            
+            let html = `<div class="question-box"><h2>${data.q}</h2>`;
+            data.options.forEach((opt, i) => {
+                html += `
+                    <div class="option" onclick="select('${opt.next}', this)">
+                        <input type="radio" name="q" id="opt${i}" value="${opt.next}">
+                        <label for="opt${i}">${opt.text}</label>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            quiz.innerHTML = html;
+            window.scrollTo(0, 0);
         }
 
-        function goBack() {
-            if (currentStep > 0) {
-                const flow = getActiveFlow();
-                const qid = flow[currentStep];
-                delete answers[qid];
-                currentStep--;
-                render();
-            }
+        function select(next, elem) {
+            document.querySelectorAll('.option').forEach(o => o.style.borderColor = 'transparent');
+            elem.style.borderColor = '#37563b';
+            
+            setTimeout(() => {
+                if (next.startsWith('result_')) {
+                    showResult(next.replace('result_', ''));
+                } else {
+                    render(next);
+                }
+            }, 300);
         }
 
-        function finish() {
-            const flow = getActiveFlow();
-            const qid = flow[currentStep];
-            const selected = document.querySelector('input[name="current"]:checked');
-            if (!selected) { alert("Lütfen bir seçenek seç"); return; }
-            answers[qid] = selected.value;
-
-            document.getElementById("progress").style.width = "100%";
-            showResult();
-        }
-
-        function showResult() {
-            const product = getProduct(answers);
-            document.getElementById("quiz").style.display = "none";
-
-            const result = document.getElementById("result");
-            result.style.display = "block";
+        function showResult(key) {
+            const product = products[key];
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('progress').parentElement.style.display = 'none';
+            const result = document.getElementById('result');
+            result.style.display = 'block';
             result.innerHTML = `
-                <div class="result-header">
-                    <h2>Sana En Uygun Karışım:</h2>
-                    <p>Cevaplarına göre bu toprak tam sana göre 🌱</p>
-                </div>
+                <h2>Sana En Uygun Toprak Karışımı</h2>
+                <p class="result-subtitle">Bitkinin için ideal substrat</p>
                 <div class="product-box">
-                    <span class="product-tag">${product.tag}</span>
                     <h3>${product.name}</h3>
                     <p>${product.desc}</p>
-                    <a href="${product.url}" class="buy-btn" target="_top">Satın Al →</a>
                 </div>
-                <button class="restart-btn" onclick="restart()">← Testi Yeniden Başlat</button>
+                <a href="${product.url}" class="buy-btn">Satın Al →</a>
+                <button class="back-btn" onclick="location.reload()">← Baştan Başla</button>
             `;
+            window.scrollTo(0, 0);
         }
 
-        function restart() {
-            answers = {};
-            currentStep = 0;
-            document.getElementById("progress").style.width = "0%";
-            render();
+        function updateProgress() {
+            const percent = (currentStep / totalSteps) * 100;
+            document.getElementById('progress').style.width = percent + '%';
         }
 
-        render();
+        render('start');
     </script>
 </body>
 </html>
